@@ -3,68 +3,68 @@ using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
 /// <summary>
-/// Script respons·vel por instanciar e gerenciar um modelo 3D sobre uma imagem rastreada em Realidade Aumentada.
+/// Script respons√°vel por instanciar e gerenciar um modelo 3D sobre uma imagem rastreada em Realidade Aumentada.
 /// </summary>
 public class ImageTargetSpawner : MonoBehaviour
 {
     [Header("Configuracoes de Realidade Aumentada")]
-    // ReferÍncia ao componente que gerencia as imagens que a c‚mera detecta no ambiente
+    // Refer√™ncia ao componente que gerencia as imagens que a c√¢mera detecta no ambiente
     [SerializeField] private ARTrackedImageManager gerenciadorImagemAR;
 
     [Header("Modelo 3D")]
-    // O modelo 3D que vai aparecer em cima do marcador (ex: a peÁa de roupa sendo projetada no Pocket Fitting)
+    // O modelo 3D que vai aparecer em cima do marcador (ex: a pe√ßa de roupa sendo projetada no Pocket Fitting)
     [SerializeField] private GameObject modelo3D;
 
     [Header("Nome da imagem da biblioteca")]
     // O nome exato da imagem que foi cadastrada na Reference Image Library da Unity
     [SerializeField] private string nomeImagemAlvo = "marcadorCubo";
 
-    // Vari·vel interna para guardar a referÍncia do objeto 3D depois que ele for criado na cena
+    // Vari√°vel interna para guardar a refer√™ncia do objeto 3D depois que ele for criado na cena
     private GameObject objetoInstanciado;
 
-    // OnEnable È chamado automaticamente quando este script (ou o objeto em que ele est·) È ativado
+    // OnEnable √© chamado automaticamente quando este script (ou o objeto em que ele est√°) √© ativado
     private void OnEnable()
     {
         if (gerenciadorImagemAR != null)
         {
-            // "Inscreve" o nosso mÈtodo AoAlterarImagens para ser avisado sempre que o status 
-            // de qualquer imagem mudar (quando a c‚mera acha, atualiza ou perde o rastreio)
+            // "Inscreve" o nosso m√©todo AoAlterarImagens para ser avisado sempre que o status 
+            // de qualquer imagem mudar (quando a c√¢mera acha, atualiza ou perde o rastreio)
             gerenciadorImagemAR.trackablesChanged.AddListener(AoAlterarImagens);
         }
     }
 
-    // OnDisable È chamado automaticamente quando o script È desativado
+    // OnDisable √© chamado automaticamente quando o script √© desativado
     private void OnDisable()
     {
         if (gerenciadorImagemAR != null)
         {
-            // Remove a inscriÁ„o para evitar erros de memÛria e chamadas desnecess·rias caso o objeto seja desligado
+            // Remove a inscri√ß√£o para evitar erros de mem√≥ria e chamadas desnecess√°rias caso o objeto seja desligado
             gerenciadorImagemAR.trackablesChanged.RemoveListener(AoAlterarImagens);
         }
     }
 
-    // Este mÈtodo recebe as informaÁıes das imagens rastreadas a cada frame em que h· mudanÁas
+    // Este m√©todo recebe as informa√ß√µes das imagens rastreadas a cada frame em que h√° mudan√ßas
     private void AoAlterarImagens(ARTrackablesChangedEventArgs<ARTrackedImage> args)
     {
-        // 1. Loop para as imagens novas que a c‚mera acabou de encontrar
+        // 1. Loop para as imagens novas que a c√¢mera acabou de encontrar
         foreach (var imagem in args.added)
         {
             AtualizarImagem(imagem);
         }
 
-        // 2. Loop para as imagens que j· foram encontradas e est„o apenas se movendo
+        // 2. Loop para as imagens que j√° foram encontradas e est√£o apenas se movendo
         foreach (var imagem in args.updated)
         {
             AtualizarImagem(imagem);
         }
 
-        // 3. Loop para as imagens que saÌram da vis„o da c‚mera
+        // 3. Loop para as imagens que sa√≠ram da vis√£o da c√¢mera
         foreach (var imagemRemovida in args.removed)
         {
-            // Verifica se a imagem que sumiu È de fato o nosso alvo especÌfico
+            // Verifica se a imagem que sumiu √© de fato o nosso alvo espec√≠fico
             if (imagemRemovida.Value.referenceImage.name == nomeImagemAlvo)
             {
-                // Se for o nosso alvo e o modelo estiver instanciado na cena, nÛs o escondemos
+                // Se for o nosso alvo e o modelo estiver instanciado na cena, n√≥s o escondemos
                 if (objetoInstanciado != null)
                 {
                     objetoInstanciado.SetActive(false);
@@ -73,38 +73,48 @@ public class ImageTargetSpawner : MonoBehaviour
         }
     }
 
-    // MÈtodo central para avaliar o estado da imagem e decidir o que fazer com o modelo 3D
+    // M√©todo central para avaliar o estado da imagem e decidir o que fazer com o modelo 3D
     private void AtualizarImagem(ARTrackedImage imagem)
     {
-        // Se a imagem detectada n„o tiver o nome que queremos ("marcadorCubo"), ignoramos e saÌmos do mÈtodo
+        // Se a imagem detectada n√£o tiver o nome que queremos ("marcadorCubo"), ignoramos e sa√≠mos do m√©todo
         if (imagem.referenceImage.name != nomeImagemAlvo)
             return;
 
-        // Verifica se a c‚mera est· conseguindo rastrear a imagem com precis„o
+        // Verifica se a c√¢mera est√° conseguindo rastrear a imagem com precis√£o
         if (imagem.trackingState == TrackingState.Tracking)
         {
-            // Se o modelo ainda n„o foi criado (È a primeira vez que detectamos a imagem com sucesso)
+            // Se o modelo ainda n√£o foi criado (√© a primeira vez que detectamos a imagem com sucesso)
             if (objetoInstanciado == null)
             {
-                // Cria (Instancia) o modelo 3D na mesma posiÁ„o e rotaÁ„o da imagem real.
-                // O quarto par‚metro (imagem.transform) faz o modelo 3D virar "filho" do marcador.
-                // Assim, a prÛpria Unity move o objeto junto com o marcador automaticamente, poupando processamento.
+                // Cria (Instancia) o modelo 3D na mesma posi√ß√£o e rota√ß√£o da imagem real.
+                // O quarto par√¢metro (imagem.transform) faz o modelo 3D virar "filho" do marcador.
+                // Assim, a pr√≥pria Unity move o objeto junto com o marcador automaticamente, poupando processamento.
                 objetoInstanciado = Instantiate(
                     modelo3D,
                     imagem.transform.position,
                     imagem.transform.rotation,
                     imagem.transform
                 );
+
+                // Procura o Animator no modelo instanciado ou em algum dos seus objetos filhos
+                Animator animador = objetoInstanciado.GetComponentInChildren<Animator>();
+
+                // Mant√©m o estado atual da anima√ß√£o caso o objeto seja desativado temporariamente
+                // quando o rastreamento do marcador ficar limitado ou for perdido
+                if (animador != null)
+                {
+                    animador.keepAnimatorStateOnDisable = true;
+                }
             }
             else
             {
-                // Se o objeto j· havia sido criado antes, sÛ garantimos que ele volte a ficar visÌvel
+                // Se o objeto j√° havia sido criado antes, s√≥ garantimos que ele volte a ficar vis√≠vel
                 objetoInstanciado.SetActive(true);
             }
         }
         else // Cai aqui caso o rastreamento esteja ruim (TrackingState.Limited) ou perdido (TrackingState.None)
         {
-            // Se perdemos a precis„o do marcador, escondemos o modelo 3D para ele n„o ficar flutuando no lugar errado
+            // Se perdemos a precis√£o do marcador, escondemos o modelo 3D para ele n√£o ficar flutuando no lugar errado
             if (objetoInstanciado != null)
             {
                 objetoInstanciado.SetActive(false);

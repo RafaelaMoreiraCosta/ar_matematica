@@ -724,7 +724,7 @@ MonoBehaviour:
       m_Calls: []
   m_SerializedLibrary: {fileID: 11400000, guid: 5509f5ea1b3491946acaa3399351e205, type: 2}
   m_MaxNumberOfMovingImages: 1
-  m_TrackedImagePrefab: {fileID: 1523005276531896009, guid: 469576fbfc2806d43a5e3294e8ed8043, type: 3}
+  m_TrackedImagePrefab: {fileID: 8607574636347086577, guid: 469576fbfc2806d43a5e3294e8ed8043, type: 3}
 --- !u!114 &1009371655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -738,7 +738,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gerenciadorImagemAR: {fileID: 1009371654}
-  modelo3D: {fileID: 1523005276531896009, guid: 469576fbfc2806d43a5e3294e8ed8043, type: 3}
+  modelo3D: {fileID: 8607574636347086577, guid: 469576fbfc2806d43a5e3294e8ed8043, type: 3}
   nomeImagemAlvo: marcadorCubo
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
