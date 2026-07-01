@@ -771,6 +771,8 @@ MonoBehaviour:
     prefab: {fileID: 8607574636347086577, guid: 469576fbfc2806d43a5e3294e8ed8043, type: 3}
   - nomeImagem: marcadorFracao
     prefab: {fileID: 6077283887854426594, guid: faca5b308e5effb40ac1737f30e7d8ac, type: 3}
+  - nomeImagem: marcadorFacesVerticesArestas
+    prefab: {fileID: 3551828136225305002, guid: 5a8e96939fc00f24b8f249ec3f79d912, type: 3}
   permitirApenasUmObjetoAtivo: 1
 --- !u!114 &1964602099
 MonoBehaviour:
