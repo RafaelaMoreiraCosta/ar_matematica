@@ -770,9 +770,11 @@ MonoBehaviour:
   - nomeImagem: marcadorCubo
     prefab: {fileID: 8607574636347086577, guid: 469576fbfc2806d43a5e3294e8ed8043, type: 3}
   - nomeImagem: marcadorFracao
-    prefab: {fileID: 6077283887854426594, guid: faca5b308e5effb40ac1737f30e7d8ac, type: 3}
+    prefab: {fileID: 7734777833706214511, guid: 99dc3df7eef71f847a90a4a15f222f97, type: 3}
   - nomeImagem: marcadorFacesVerticesArestas
     prefab: {fileID: 3551828136225305002, guid: 5a8e96939fc00f24b8f249ec3f79d912, type: 3}
+  - nomeImagem: marcadorTransformacoes
+    prefab: {fileID: 3098553491044955742, guid: 81bd91ae3ee661b468136e5d917bffbb, type: 3}
   permitirApenasUmObjetoAtivo: 1
 --- !u!114 &1964602099
 MonoBehaviour:
