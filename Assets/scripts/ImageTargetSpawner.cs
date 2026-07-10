@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using TMPro;
 
 /// <summary>
 /// Script responsável por gerenciar vários marcadores de imagem em Realidade Aumentada.
@@ -9,6 +10,9 @@ using UnityEngine.XR.ARSubsystems;
 /// Cada marcador cadastrado na Reference Image Library pode ter um modelo 3D próprio.
 /// Quando a câmera detecta um marcador, o modelo correspondente aparece.
 /// Quando outro marcador aparece, o modelo antigo some e o novo modelo aparece.
+/// 
+/// Além disso, exibe uma identificação contextual (título do tópico + ano escolar)
+/// no canto da tela enquanto o marcador está sendo rastreado.
 /// </summary>
 public class ImageTargetMultiSpawner : MonoBehaviour
 {
@@ -16,7 +20,8 @@ public class ImageTargetMultiSpawner : MonoBehaviour
     /// Classe auxiliar usada apenas para aparecer no Inspector da Unity.
     /// 
     /// Ela representa a relação:
-    /// nome da imagem cadastrada na Reference Image Library -> prefab 3D que deve aparecer.
+    /// nome da imagem cadastrada na Reference Image Library -> prefab 3D que deve aparecer,
+    /// além dos metadados usados na identificação contextual exibida na tela.
     /// </summary>
     [System.Serializable]
     public class MarcadorObjeto
@@ -26,6 +31,13 @@ public class ImageTargetMultiSpawner : MonoBehaviour
 
         [Tooltip("Prefab 3D que deve aparecer quando esse marcador for detectado")]
         public GameObject prefab;
+
+        [Header("Identificação Contextual")]
+        [Tooltip("Nome do tópico exibido na tela (ex: Planificação de sólidos)")]
+        public string tituloTopico;
+
+        [Tooltip("Ano escolar sugerido, exibido entre parênteses (ex: 6º–7º ano)")]
+        public string anoEscolar;
     }
 
     [Header("Configuracoes de Realidade Aumentada")]
@@ -36,7 +48,7 @@ public class ImageTargetMultiSpawner : MonoBehaviour
     [Header("Marcadores e Modelos 3D")]
     // Lista configurável pelo Inspector.
     // Aqui cadastramos todos os pares:
-    // nome do marcador -> modelo 3D correspondente.
+    // nome do marcador -> modelo 3D correspondente (+ metadados de identificação).
     [SerializeField] private List<MarcadorObjeto> marcadores = new();
 
     [Header("Comportamento")]
@@ -49,12 +61,20 @@ public class ImageTargetMultiSpawner : MonoBehaviour
     // Vários marcadores podem mostrar vários objetos ao mesmo tempo.
     [SerializeField] private bool permitirApenasUmObjetoAtivo = true;
 
+    [Header("UI de Identificação Contextual")]
+    [Tooltip("Texto (TextMeshPro - UI) que mostra o tópico e o ano escolar no canto da tela")]
+    [SerializeField] private TextMeshProUGUI textoIdentificacao;
+
     // Dicionário interno usado para encontrar rapidamente qual prefab pertence a cada imagem.
     //
     // Exemplo:
     // "marcadorCubo" -> prefabCubo
     // "marcadorFracao" -> prefabFracao
     private readonly Dictionary<string, GameObject> prefabsPorImagem = new();
+
+    // Dicionário interno usado para encontrar rapidamente os metadados (título/ano)
+    // de cada marcador, sem precisar percorrer a lista toda vez.
+    private readonly Dictionary<string, MarcadorObjeto> dadosPorImagem = new();
 
     // Dicionário interno usado para guardar os objetos já instanciados na cena.
     //
@@ -73,9 +93,16 @@ public class ImageTargetMultiSpawner : MonoBehaviour
     // antes do OnEnable e antes do primeiro frame.
     private void Awake()
     {
-        // Monta o dicionário que relaciona nomes dos marcadores aos prefabs.
+        // Monta os dicionários que relacionam nomes dos marcadores aos prefabs e metadados.
         // Fazemos isso uma vez no começo para não precisar procurar na lista toda hora.
         MontarDicionario();
+
+        // Garante que a UI de identificação comece escondida,
+        // já que nenhum marcador foi detectado ainda.
+        if (textoIdentificacao != null)
+        {
+            textoIdentificacao.gameObject.SetActive(false);
+        }
     }
 
     // OnEnable é chamado automaticamente quando este script, ou o objeto em que ele está, é ativado.
@@ -101,16 +128,17 @@ public class ImageTargetMultiSpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// Monta um dicionário interno ligando cada nome de imagem ao seu prefab.
+    /// Monta os dicionários internos ligando cada nome de imagem ao seu prefab e aos seus metadados.
     /// 
-    /// Isso transforma a lista configurada no Inspector em uma estrutura mais rápida
+    /// Isso transforma a lista configurada no Inspector em estruturas mais rápidas
     /// para consulta durante o rastreamento da câmera.
     /// </summary>
     private void MontarDicionario()
     {
-        // Limpa o dicionário antes de montar.
+        // Limpa os dicionários antes de montar.
         // Isso evita dados duplicados caso esse método venha a ser chamado novamente no futuro.
         prefabsPorImagem.Clear();
+        dadosPorImagem.Clear();
 
         // Percorre todos os marcadores configurados no Inspector.
         foreach (var item in marcadores)
@@ -144,6 +172,9 @@ public class ImageTargetMultiSpawner : MonoBehaviour
 
             // Adiciona o par nome da imagem -> prefab no dicionário.
             prefabsPorImagem.Add(item.nomeImagem, item.prefab);
+
+            // Adiciona o par nome da imagem -> dados (título/ano) no dicionário.
+            dadosPorImagem.Add(item.nomeImagem, item);
         }
     }
 
@@ -182,7 +213,7 @@ public class ImageTargetMultiSpawner : MonoBehaviour
             var imagem = imagemRemovida.Value;
 
             // Se a imagem removida for uma das imagens que conhecemos,
-            // escondemos o objeto 3D correspondente.
+            // escondemos o objeto 3D correspondente e a identificação contextual.
             EsconderSeForImagemConhecida(imagem.referenceImage.name);
         }
     }
@@ -228,6 +259,8 @@ public class ImageTargetMultiSpawner : MonoBehaviour
     /// 
     /// Se o objeto ainda não existir, ele será instanciado.
     /// Se já existir, ele será apenas reativado e reposicionado.
+    /// 
+    /// Também atualiza a identificação contextual (título + ano) na tela.
     /// </summary>
     private void AtivarObjetoDaImagem(string nomeImagem, ARTrackedImage imagem)
     {
@@ -259,6 +292,9 @@ public class ImageTargetMultiSpawner : MonoBehaviour
 
         // Guarda qual imagem está ativa no momento.
         imagemAtivaAtual = nomeImagem;
+
+        // Atualiza o texto de identificação contextual no canto da tela.
+        AtualizarTextoIdentificacao(nomeImagem);
     }
 
     /// <summary>
@@ -317,6 +353,8 @@ public class ImageTargetMultiSpawner : MonoBehaviour
     /// <summary>
     /// Esconde o objeto 3D correspondente ao nome da imagem,
     /// caso essa imagem esteja cadastrada e o objeto já tenha sido criado.
+    /// 
+    /// Também esconde a identificação contextual, caso esse marcador fosse o ativo.
     /// </summary>
     private void EsconderSeForImagemConhecida(string nomeImagem)
     {
@@ -331,10 +369,15 @@ public class ImageTargetMultiSpawner : MonoBehaviour
         objeto.SetActive(false);
 
         // Se o objeto escondido era o objeto ativo atual,
-        // limpamos a variável de controle.
+        // limpamos a variável de controle e escondemos a identificação contextual.
         if (imagemAtivaAtual == nomeImagem)
         {
             imagemAtivaAtual = null;
+
+            if (textoIdentificacao != null)
+            {
+                textoIdentificacao.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -362,5 +405,45 @@ public class ImageTargetMultiSpawner : MonoBehaviour
                 objeto.SetActive(false);
             }
         }
+    }
+
+    /// <summary>
+    /// Atualiza o texto exibido no canto da tela com o título do tópico
+    /// e o ano escolar sugerido, de acordo com o marcador detectado.
+    /// 
+    /// Se o marcador não tiver título configurado, o texto fica escondido
+    /// para não exibir uma UI vazia.
+    /// </summary>
+    private void AtualizarTextoIdentificacao(string nomeImagem)
+    {
+        // Se nenhuma referência de UI foi configurada no Inspector, não há o que fazer.
+        if (textoIdentificacao == null)
+            return;
+
+        // Busca os metadados (título/ano) cadastrados para esse marcador.
+        if (!dadosPorImagem.TryGetValue(nomeImagem, out MarcadorObjeto dados))
+        {
+            textoIdentificacao.gameObject.SetActive(false);
+            return;
+        }
+
+        // Monta o texto no formato "Tópico (Ano escolar)".
+        string texto = dados.tituloTopico;
+
+        if (!string.IsNullOrWhiteSpace(dados.anoEscolar))
+        {
+            texto += $" ({dados.anoEscolar})";
+        }
+
+        // Se não houver nenhum texto configurado, escondemos a UI.
+        if (string.IsNullOrWhiteSpace(texto))
+        {
+            textoIdentificacao.gameObject.SetActive(false);
+            return;
+        }
+
+        // Atualiza e exibe o texto na tela.
+        textoIdentificacao.text = texto;
+        textoIdentificacao.gameObject.SetActive(true);
     }
 }
