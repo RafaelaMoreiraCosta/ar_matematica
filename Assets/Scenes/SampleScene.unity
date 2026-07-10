@@ -413,8 +413,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -22, y: 172}
-  m_SizeDelta: {x: 498.8813, y: 44.546}
+  m_AnchoredPosition: {x: 2, y: 181}
+  m_SizeDelta: {x: 968.683, y: 34.4377}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &461315075
 MonoBehaviour:
@@ -439,14 +439,14 @@ MonoBehaviour:
   m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4279308562
-  m_fontColor: {r: 0.07169801, g: 0.06804547, b: 0.06804547, a: 1}
+    rgba: 4279765779
+  m_fontColor: {r: 0.07466155, g: 0.043253813, b: 0.09433961, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -469,8 +469,8 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 16
+  m_fontStyle: 16
+  m_HorizontalAlignment: 8
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -1014,9 +1014,13 @@ MonoBehaviour:
     tituloTopico: "Fra\xE7\xF5es"
     anoEscolar: "5\xB0\u2013 6\xB0 ano"
   - nomeImagem: marcadorFacesVerticesArestas
-    prefab: {fileID: 3551828136225305002, guid: 5a8e96939fc00f24b8f249ec3f79d912, type: 3}
+    prefab: {fileID: 3194349587290221295, guid: b9de72e4ad74ae548b5e333952442855, type: 3}
     tituloTopico: "V\xE9rtices, arestas e faces"
     anoEscolar: "5\xB0\u2013 6\xB0 ano"
+  - nomeImagem: marcadorTransformacoes
+    prefab: {fileID: 3469378750679020339, guid: 1e4626344f91ebc4f9124ec3916f814d, type: 3}
+    tituloTopico: "Transforma\xE7\xF5es geom\xE9tricas"
+    anoEscolar: "7\xB0\u2013 9\xB0 ano"
   permitirApenasUmObjetoAtivo: 1
   textoIdentificacao: {fileID: 461315075}
 --- !u!114 &1964602099
