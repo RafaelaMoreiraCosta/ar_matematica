@@ -13,6 +13,10 @@ using TMPro;
 /// 
 /// Além disso, exibe uma identificação contextual (título do tópico + ano escolar)
 /// no canto da tela enquanto o marcador está sendo rastreado.
+/// 
+/// Também registra automaticamente o objeto ativo no AnimationManager,
+/// para que o botão único de Pausar/Retomar sempre controle o objeto
+/// que está sendo exibido no momento.
 /// </summary>
 public class ImageTargetMultiSpawner : MonoBehaviour
 {
@@ -260,7 +264,8 @@ public class ImageTargetMultiSpawner : MonoBehaviour
     /// Se o objeto ainda não existir, ele será instanciado.
     /// Se já existir, ele será apenas reativado e reposicionado.
     /// 
-    /// Também atualiza a identificação contextual (título + ano) na tela.
+    /// Também atualiza a identificação contextual (título + ano) na tela
+    /// e registra o objeto como alvo atual do botão de Pausar/Retomar.
     /// </summary>
     private void AtivarObjetoDaImagem(string nomeImagem, ARTrackedImage imagem)
     {
@@ -289,6 +294,16 @@ public class ImageTargetMultiSpawner : MonoBehaviour
 
         // Garante que o objeto fique visível.
         objeto.SetActive(true);
+
+        // Registra esse objeto como o alvo atual do botão único de Pausar/Retomar.
+        //
+        // Assim, não importa qual marcador esteja sendo exibido: o botão
+        // sempre vai pausar/retomar a animação do objeto que está na tela agora.
+        AnimationPauseController controlePausa = objeto.GetComponentInChildren<AnimationPauseController>();
+        if (controlePausa != null && AnimationManager.Instance != null)
+        {
+            AnimationManager.Instance.SetActiveTarget(controlePausa);
+        }
 
         // Guarda qual imagem está ativa no momento.
         imagemAtivaAtual = nomeImagem;
@@ -354,7 +369,9 @@ public class ImageTargetMultiSpawner : MonoBehaviour
     /// Esconde o objeto 3D correspondente ao nome da imagem,
     /// caso essa imagem esteja cadastrada e o objeto já tenha sido criado.
     /// 
-    /// Também esconde a identificação contextual, caso esse marcador fosse o ativo.
+    /// Também esconde a identificação contextual, caso esse marcador fosse o ativo,
+    /// e limpa o alvo do AnimationManager para o botão de pausa não controlar
+    /// um objeto que não está mais visível.
     /// </summary>
     private void EsconderSeForImagemConhecida(string nomeImagem)
     {
@@ -373,6 +390,13 @@ public class ImageTargetMultiSpawner : MonoBehaviour
         if (imagemAtivaAtual == nomeImagem)
         {
             imagemAtivaAtual = null;
+
+            // Evita que o botão único de Pausar/Retomar continue apontando
+            // para um objeto que acabou de ser escondido.
+            if (AnimationManager.Instance != null)
+            {
+                AnimationManager.Instance.SetActiveTarget(null);
+            }
 
             if (textoIdentificacao != null)
             {
