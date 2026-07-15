@@ -1331,7 +1331,7 @@ MonoBehaviour:
     tituloTopico: "Fra\xE7\xF5es"
     anoEscolar: "5\xB0\u2013 6\xB0 ano"
   - nomeImagem: marcadorFacesVerticesArestas
-    prefab: {fileID: 3194349587290221295, guid: b9de72e4ad74ae548b5e333952442855, type: 3}
+    prefab: {fileID: 8031000953264371573, guid: b9de72e4ad74ae548b5e333952442855, type: 3}
     tituloTopico: "V\xE9rtices, arestas e faces"
     anoEscolar: "5\xB0\u2013 6\xB0 ano"
   - nomeImagem: marcadorTransformacoes
