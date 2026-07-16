@@ -1331,11 +1331,11 @@ MonoBehaviour:
     tituloTopico: "Fra\xE7\xF5es"
     anoEscolar: "5\xB0\u2013 6\xB0 ano"
   - nomeImagem: marcadorFacesVerticesArestas
-    prefab: {fileID: 8031000953264371573, guid: b9de72e4ad74ae548b5e333952442855, type: 3}
+    prefab: {fileID: 222559131531461124, guid: d511b593f8ab300499fadf7b70492e7d, type: 3}
     tituloTopico: "V\xE9rtices, arestas e faces"
     anoEscolar: "5\xB0\u2013 6\xB0 ano"
   - nomeImagem: marcadorTransformacoes
-    prefab: {fileID: 3469378750679020339, guid: 1e4626344f91ebc4f9124ec3916f814d, type: 3}
+    prefab: {fileID: 5379592697174966363, guid: 34a23be752d86c047bb79de567c16c5d, type: 3}
     tituloTopico: "Transforma\xE7\xF5es geom\xE9tricas"
     anoEscolar: "7\xB0\u2013 9\xB0 ano"
   permitirApenasUmObjetoAtivo: 1
