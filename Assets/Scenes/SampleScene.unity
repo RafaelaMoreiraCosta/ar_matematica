@@ -1323,7 +1323,7 @@ MonoBehaviour:
   gerenciadorImagemAR: {fileID: 1964602099}
   marcadores:
   - nomeImagem: marcadorCubo
-    prefab: {fileID: 8607574636347086577, guid: 469576fbfc2806d43a5e3294e8ed8043, type: 3}
+    prefab: {fileID: 2620669203094190099, guid: ac74fbff92c3f7a42b6124fc85471838, type: 3}
     tituloTopico: "Planifica\xE7\xE3o de s\xF3lidos"
     anoEscolar: "6\xB0\u2013 7\xB0 ano"
   - nomeImagem: marcadorFracao
